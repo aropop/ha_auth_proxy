@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import {createProxyMiddleware} from 'http-proxy-middleware';
 import * as fs from 'fs';
 import * as https from 'https';
-import * as sqlite3 from 'sqlite3'
+import sqlite3 from 'sqlite3'
 import sqliteStoreFactory from 'express-session-sqlite'
 
 const app = express();
