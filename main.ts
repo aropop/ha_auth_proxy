@@ -2,9 +2,8 @@ import express, {Handler, Request, Response} from "express";
 import expressSession, {Session, SessionData} from "express-session";
 import fetch from 'node-fetch';
 import {createProxyMiddleware} from 'http-proxy-middleware';
-
-// @ts-ignore
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+import * as fs from 'fs';
+import * as https from 'https';
 
 const app = express();
 
@@ -116,5 +115,15 @@ app.use(isAuthenticated, createProxyMiddleware({
     ws: true
 }));
 
-app.listen(port, () => console.log(`Started on ${port}`));
+if(process.env['USE_SSL']) {
+    const privateKey = fs.readFileSync( '/etc/ssl/private.key' );
+    const certificate = fs.readFileSync( '/etc/ssl/certificate.crt' );
+    https.createServer({
+        key: privateKey,
+        cert: certificate
+    }, app).listen(port);
+} else {
+    app.listen(port, () => console.log(`Started on ${port}`));
+}
+
 
