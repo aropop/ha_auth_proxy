@@ -4,6 +4,8 @@ import fetch from 'node-fetch';
 import {createProxyMiddleware} from 'http-proxy-middleware';
 import * as fs from 'fs';
 import * as https from 'https';
+import * as sqlite3 from 'sqlite3'
+import sqliteStoreFactory from 'express-session-sqlite'
 
 const app = express();
 
@@ -20,7 +22,7 @@ const proxyUrl = process.env['PROXY_CALLBACK_URL']!;
 const proxyToUrl = process.env['PROXY_TO_URL']!;
 const port = Number(process.env['PORT'] ?? 8000);
 
-if(process.env['TRUST_EVERY_SSL']) {
+if (process.env['TRUST_EVERY_SSL']) {
     // @ts-ignore
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 }
@@ -33,7 +35,14 @@ declare module 'express-session' {
     }
 }
 
+// @ts-ignore
+const SqliteStore = sqliteStoreFactory.default(expressSession)
 app.use(expressSession({
+    store: new SqliteStore({
+        driver: sqlite3.Database,
+        path: '/tmp/sqlite.db',
+        ttl: 1000 * 60 * 5,
+    }),
     secret: 'keyboard cat',
     resave: false,
     cookie: {
