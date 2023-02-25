@@ -49,6 +49,14 @@ Options can be used through environment variables
 | `PORT`                   | false    | Port on which the proxy starts, defaults to 8000                                                                           |
 | `TRUST_EVERY_SSL`        | false    | Ignore node.js SSL errors, defaults to false                                                                               |
 
+## How it works
+The proxy will check if you are logged in to home assistant, if no existing sessions exists
+the proxy will redirect you to the home assistant OAuth login screen. When logged in a session
+will be created between the browser and the proxy, which will be check on each request. All HTTP
+traffic will be proxied to the configured service.
+
+<img src="https://github.com/aropop/ha_auth_proxy/blob/main/flow.png?raw=true">
+
 
 ## Debug
 Authenticated status can be checked by opening `http(s)://your-proxy-url/ha_auth_proxy_is_authenticated` in a browser
