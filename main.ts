@@ -14,7 +14,8 @@ requiredEnvironmentKeys.forEach(key => {
     }
 });
 
-const baseUrl = process.env['HOME_ASSISTANT_URL']!;
+const homeAssistantPublicUrl = process.env['HOME_ASSISTANT_URL']!;
+const homeAssistantApiUrl = process.env['HOME_ASSISTANT_API_URL'] ?? homeAssistantPublicUrl;
 const proxyUrl = process.env['PROXY_CALLBACK_URL']!;
 const proxyToUrl = process.env['PROXY_TO_URL']!;
 const port = Number(process.env['PORT'] ?? 8000);
@@ -50,7 +51,7 @@ const refreshToken = async (session: Session & Required<SessionData>) => {
 }
 
 const tokenRequest = async (grantType: 'refresh_token' | 'authorization_code', code: string) => {
-    return fetch(`${baseUrl}/auth/token`, {
+    return fetch(`${homeAssistantApiUrl}/auth/token`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -60,7 +61,7 @@ const tokenRequest = async (grantType: 'refresh_token' | 'authorization_code', c
 }
 
 function doRedirect(res: Response, state: string) {
-    res.redirect(`${baseUrl}/auth/authorize?client_id=${encodeURIComponent(proxyUrl)}&redirect_uri=${encodeURIComponent(proxyUrl + callbackUrl)}&state=${encodeURIComponent(state)}`)
+    res.redirect(`${homeAssistantPublicUrl}/auth/authorize?client_id=${encodeURIComponent(proxyUrl)}&redirect_uri=${encodeURIComponent(proxyUrl + callbackUrl)}&state=${encodeURIComponent(state)}`)
 }
 
 const isAuthenticated: Handler = async (req, res, next) => {
