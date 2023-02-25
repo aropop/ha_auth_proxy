@@ -20,6 +20,11 @@ const proxyUrl = process.env['PROXY_CALLBACK_URL']!;
 const proxyToUrl = process.env['PROXY_TO_URL']!;
 const port = Number(process.env['PORT'] ?? 8000);
 
+if(process.env['TRUST_EVERY_SSL']) {
+    // @ts-ignore
+    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+}
+
 const callbackUrl = '/ha_auth_proxy_callback';
 
 declare module 'express-session' {
@@ -116,9 +121,9 @@ app.use(isAuthenticated, createProxyMiddleware({
     ws: true
 }));
 
-if(process.env['USE_SSL']) {
-    const privateKey = fs.readFileSync( '/etc/ssl/private.key' );
-    const certificate = fs.readFileSync( '/etc/ssl/certificate.crt' );
+if (process.env['USE_SSL']) {
+    const privateKey = fs.readFileSync('/etc/ssl/private.key');
+    const certificate = fs.readFileSync('/etc/ssl/certificate.crt');
     https.createServer({
         key: privateKey,
         cert: certificate
