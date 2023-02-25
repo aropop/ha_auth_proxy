@@ -49,6 +49,12 @@ Options can be used through environment variables
 | `PORT`                   | false    | Port on which the proxy starts, defaults to 8000                                                                           |
 | `TRUST_EVERY_SSL`        | false    | Ignore node.js SSL errors, defaults to false                                                                               |
 
+## Build from source
+
+```
+npm install && npm run build && docker build .
+```
+
 ## How it works
 The proxy will check if you are logged in to home assistant, if no existing sessions exists
 the proxy will redirect you to the home assistant OAuth login screen. When logged in a session
