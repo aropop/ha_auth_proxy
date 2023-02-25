@@ -52,7 +52,7 @@ Options can be used through environment variables
 ## How it works
 The proxy will check if you are logged in to home assistant, if no existing sessions exists
 the proxy will redirect you to the home assistant OAuth login screen. When logged in a session
-will be created between the browser and the proxy, which will be check on each request. All HTTP
+will be created between the browser and the proxy, which will be checked on each request. All HTTP
 traffic will be proxied to the configured service.
 
 <img src="https://github.com/aropop/ha_auth_proxy/blob/main/flow.png?raw=true">
