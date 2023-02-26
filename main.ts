@@ -9,7 +9,7 @@ import sqliteStoreFactory from 'express-session-sqlite'
 
 const app = express();
 
-const requiredEnvironmentKeys = ['HOME_ASSISTANT_URL', 'PROXY_CALLBACK_URL', 'PROXY_TO_URL'];
+const requiredEnvironmentKeys = ['HOME_ASSISTANT_URL', 'PROXY_CALLBACK_URL', 'PROXY_TO_URL', 'SESSION_SECRET'];
 requiredEnvironmentKeys.forEach(key => {
     if (!process.env[key]) {
         throw new Error('You should provide ' + key);
@@ -20,6 +20,8 @@ const homeAssistantPublicUrl = process.env['HOME_ASSISTANT_URL']!;
 const homeAssistantApiUrl = process.env['HOME_ASSISTANT_API_URL'] ?? homeAssistantPublicUrl;
 const proxyUrl = process.env['PROXY_CALLBACK_URL']!;
 const proxyToUrl = process.env['PROXY_TO_URL']!;
+const sessionSecret = process.env['SESSION_SECRET']!;
+const useSsl = !!process.env['USE_SSL'];
 const port = Number(process.env['PORT'] ?? 8000);
 
 if (process.env['TRUST_EVERY_SSL']) {
@@ -43,10 +45,11 @@ app.use(expressSession({
         path: '/tmp/sqlite.db',
         ttl: 1000 * 60 * 5,
     }),
-    secret: 'keyboard cat',
+    secret: sessionSecret,
     resave: false,
     cookie: {
-        maxAge: 1000 * 60 * 5
+        maxAge: 1000 * 60 * 5,
+        secure: useSsl
     },
     saveUninitialized: true
 }));
